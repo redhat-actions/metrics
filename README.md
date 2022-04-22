@@ -1,7 +1,7 @@
 # Metrics
 Single Web Page Viewer for CSV Data
 
-To run using a local web server
+To run using a local web server for development purposes.
 
 ## Windows
 ```
@@ -25,3 +25,5 @@ The metrics viewer will create a query URL as the page is configured. You can sa
 
 For example, this link will show the top 6 actions for the past 4 months [ http://localhost:8888/index.html?months=4&top=6](http://localhost:8888/index.html?months=4&top=6) 
  
+ ## Pages
+ This web page is published [here](https://redhat-actions.github.io/metrics/)
