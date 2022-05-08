@@ -50,8 +50,9 @@
   
   <div id='outer_grid_holder' class="grid-container"> </div>
 
-  <div id="legend"> </div>
   <div id="select_actions"> </div>
+  <div id="legend"> </div>
+
   <a href="#">Goto top</a>
   <h4>Data Definitions </h4>
   For each action:
@@ -81,8 +82,7 @@
       "default_months_to_show": 12,
       "months_to_show": 12,
       "default_top_n_actions_to_show": null, 
-      "top_n_actions_to_show": null,  
-      "default_actions_to_show": null,
+      "top_n_actions_to_show": null,   
       "actions_to_show": null
     } 
     const params = new URLSearchParams(window.location.search)
@@ -124,11 +124,11 @@
         query += prefix + "top=" + globalAppConfig.top_n_actions_to_show
         prefix = "&"
       }
-      if (globalAppConfig.actions_to_show) 
+      if (globalAppConfig.actions_to_show != null && globalAppConfig.actions_to_show.length != 0 ) 
       { 
         query += prefix + "show=" + globalAppConfig.actions_to_show
         prefix = "&"
-      }  
+      }   
       history.replaceState({  foo: "bar" }, "Ignored", "index.html"+ query)
     } 
     //updateWindowsLocation ()
@@ -188,14 +188,28 @@
           + '"/><label for="track">' 
           + label + '</label><br />'
       })
+      selected += '<hr> <button id="select_all">Select All</button>'
+      selected += '<button id="select_none">Select None</button>'
       selected += '</fieldset>' 
+
       setInnerHtml("select_actions", selected);
       var trimmer = document.getElementById("show_top_n_trimmer");
+      trimmer.max = jsondata.action_names.length
       jsondata.action_names.forEach(function (label) {
         var input = document.getElementById('select_label_' + label); 
         input.checked = jsondata.selectedActions[label]
-        input.oninput = function () {
+        input.oninput = function () { 
           jsondata.selectedActions[label] = !jsondata.selectedActions[label] 
+          if (jsondata.selectedActions[label]) { 
+            trimmer.value++
+          } else { 
+            trimmer.value--
+          } 
+          var total = Object.keys(jsondata.selectedActions).length;
+          var totalEnabled = (Object.values(jsondata.selectedActions).filter(function (enabled) { return enabled; })).length;
+
+          trimmer.value=totalEnabled;
+          trimmer.max=total; 
           jsondata.labels.forEach(function (l) {
             show_graphs(jsondata, l);
           })
@@ -203,6 +217,37 @@
         }
       })  
       
+      
+     var delayed_refresh_location= function () {  
+        updateWindowsLocation()
+     }
+      var select_all = document.getElementById("select_all");
+      select_all.onclick = function ()  {
+        jsondata.action_names.forEach(function (label) {
+          var input = document.getElementById('select_label_' + label); 
+          if (!jsondata.selectedActions[label]) {
+            input.checked = true; 
+            input.oninput() 
+          }
+        })
+         
+        setTimeout (delayed_refresh_location, 2000);
+     }
+
+     var select_none = document.getElementById("select_none");
+     select_none.onclick = function ()  {
+        jsondata.action_names.forEach(function (label) {
+          var input = document.getElementById('select_label_' + label); 
+          if (jsondata.selectedActions[label]) {
+            input.checked = false;
+            input.oninput() 
+          }
+        })
+        
+        setTimeout (delayed_refresh_location, 2000);
+     }
+
+
       var totalEnabled = (Object.values(jsondata.selectedActions).filter(function (enabled) { return enabled; })).length;
       var canvas_grid = ''
       jsondata.labels.forEach(function (label) {
@@ -246,10 +291,10 @@
       var total = Object.keys(json.selectedActions).length;
       var totalEnabled = (Object.values(json.selectedActions).filter(function (enabled) { return enabled; })).length;
 
-      if (trimmer.max != totalEnabled) {
-        trimmer.max = totalEnabled;
-        globalAppConfig.default_top_n_actions_to_show = totalEnabled
-      }
+     if (trimmer.value > totalEnabled) {
+       trimmer.value = totalEnabled; 
+     }
+      
 
       var selectedText;
       if (totalEnabled == total) {
@@ -258,21 +303,26 @@
         selectedText = totalEnabled + ' (<a href="#legend">subset selected from ' + total + ' actions </a>)';
       }
       setInnerHtml("show_top_n_text", "Showing top " + trimmer.value + ' of ' + selectedText);
-      globalAppConfig.top_n_actions_to_show = trimmer.value
+     // globalAppConfig.top_n_actions_to_show = trimmer.value
       if (total == totalEnabled) { 
         globalAppConfig.actions_to_show = null
       } else { 
-        var enabled = Object.keys(json.selectedActions).filter(function (enabled) { 
-            return json.selectedActions[enabled]; })
+        var enabled = Object.keys(json.selectedActions).filter(function (action) { 
+            return json.selectedActions[action]; })
+      
         var prefix=""; 
         var query=""
         enabled.forEach(function (name) {
             query += prefix+name
             prefix=','
         })
-        globalAppConfig.actions_to_show = query
-      }
+        if (enabled.length == 0) { 
+          globalAppConfig.actions_to_show = null 
+        } else  { 
+          globalAppConfig.actions_to_show = query 
+        }
 
+      }
       updateWindowsLocation();
     }
 
