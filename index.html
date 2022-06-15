@@ -109,7 +109,7 @@
     globalAppConfig.initialUrl = window.location;
     globalAppConfig.initialQuery = "";
 
-    function updateWindowsLocation () { 
+    function updateWindowsLocation () {
       var prefix = "?"
       var query = ""
       if (globalAppConfig.default_months_to_show != 
@@ -118,6 +118,8 @@
         query += prefix + "months=" + globalAppConfig.months_to_show
         prefix = "&"
       }
+      console.log ("globalAppConfig.default_top_n_actions_to_show ", globalAppConfig.default_top_n_actions_to_show) 
+           console.log ("globalAppConfig.top_n_actions_to_show ", globalAppConfig.top_n_actions_to_show) 
       if (globalAppConfig.default_top_n_actions_to_show != 
           globalAppConfig.top_n_actions_to_show) 
       {  
@@ -129,6 +131,7 @@
         query += prefix + "show=" + globalAppConfig.actions_to_show
         prefix = "&"
       }   
+      console.log ("history.replaceState ", "index.html"+ query) 
       history.replaceState({  foo: "bar" }, "Ignored", "index.html"+ query)
     } 
     //updateWindowsLocation ()
@@ -303,7 +306,7 @@
         selectedText = totalEnabled + ' (<a href="#legend">subset selected from ' + total + ' actions </a>)';
       }
       setInnerHtml("show_top_n_text", "Showing top " + trimmer.value + ' of ' + selectedText);
-     // globalAppConfig.top_n_actions_to_show = trimmer.value
+      globalAppConfig.top_n_actions_to_show = trimmer.value
       if (total == totalEnabled) { 
         globalAppConfig.actions_to_show = null
       } else { 
