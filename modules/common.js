@@ -173,6 +173,8 @@ function parse_csv(text) {
     }
     actionData.data.push(r)
   }
+  actionData.skipCombinedForLabel = new Object();
+
   merge_aliased_stats(actionData)
   compute_derived_stats(actionData)
 
@@ -202,6 +204,8 @@ function compute_derived_stats(actionData) {
   })
   actionData.labels.push('UniqueRepos/UniqueOwners')
   actionData.labels.push('WorkflowRuns/UniqueRepos')
+  actionData.skipCombinedForLabel['UniqueRepos/UniqueOwners'] = true
+  actionData.skipCombinedForLabel['WorkflowRuns/UniqueRepos'] = true
 }
 
 export {

@@ -6,7 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Github Actions Data</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> -->
+
   <style>
     body {
       min-width: 1024px
@@ -48,7 +50,7 @@
 
   <div id="show_n_months_text"> Number of months to show </div>
   <input type="range" min="1" max="20" value="12" step="1" class="slider" id="show_n_month_trimmer">
-  
+
   <div id='outer_grid_holder' class="grid-container"> </div>
 
   <div id="select_actions"> </div>
@@ -77,64 +79,59 @@
       getTextAndUpdate, setInnerHtml,
       parse_csv
     } from './modules/common.js';
-     
-    var globalAppConfig =  {
+
+    var globalAppConfig = {
       "debug": false,
       "default_months_to_show": 12,
       "months_to_show": 12,
-      "default_top_n_actions_to_show": null, 
-      "top_n_actions_to_show": null,   
+      "default_top_n_actions_to_show": null,
+      "top_n_actions_to_show": null,
       "actions_to_show": null
-    } 
-    const params = new URLSearchParams(window.location.search)
-    
-    if (params.has("debug")) {  
-      globalAppConfig.debug = params.get ("debug") 
     }
-    if (params.has("months")) { 
-      var val = params.get ("months")
-      globalAppConfig.months_to_show = val 
+    const params = new URLSearchParams(window.location.search)
+
+   // Chart.register(ChartDataLabels);
+    if (params.has("debug")) {
+      globalAppConfig.debug = params.get("debug")
+    }
+    if (params.has("months")) {
+      var val = params.get("months")
+      globalAppConfig.months_to_show = val
       document.getElementById("show_n_month_trimmer").value = val;
     }
-    if (params.has("top")) {  
-      var val = params.get ("top")
+    if (params.has("top")) {
+      var val = params.get("top")
       globalAppConfig.top_n_actions_to_show = val
       document.getElementById("show_top_n_trimmer").value = val;
 
-    } 
-    if (params.has("show")) { 
-      var val = params.get ("show")
-      globalAppConfig.actions_to_show = val   
+    }
+    if (params.has("show")) {
+      var val = params.get("show")
+      globalAppConfig.actions_to_show = val
     }
 
     globalAppConfig.initialUrl = window.location;
     globalAppConfig.initialQuery = "";
 
-    function updateWindowsLocation () {
+    function updateWindowsLocation() {
       var prefix = "?"
       var query = ""
-      if (globalAppConfig.default_months_to_show != 
-          globalAppConfig.months_to_show) 
-      { 
+      if (globalAppConfig.default_months_to_show !=
+        globalAppConfig.months_to_show) {
         query += prefix + "months=" + globalAppConfig.months_to_show
         prefix = "&"
       }
-      console.log ("globalAppConfig.default_top_n_actions_to_show ", globalAppConfig.default_top_n_actions_to_show) 
-           console.log ("globalAppConfig.top_n_actions_to_show ", globalAppConfig.top_n_actions_to_show) 
-      if (globalAppConfig.default_top_n_actions_to_show != 
-          globalAppConfig.top_n_actions_to_show) 
-      {  
+      if (globalAppConfig.default_top_n_actions_to_show !=
+        globalAppConfig.top_n_actions_to_show) {
         query += prefix + "top=" + globalAppConfig.top_n_actions_to_show
         prefix = "&"
       }
-      if (globalAppConfig.actions_to_show != null && globalAppConfig.actions_to_show.length != 0 ) 
-      { 
+      if (globalAppConfig.actions_to_show != null && globalAppConfig.actions_to_show.length != 0) {
         query += prefix + "show=" + globalAppConfig.actions_to_show
         prefix = "&"
-      }   
-      console.log ("history.replaceState ", "index.html"+ query) 
-      history.replaceState({  foo: "bar" }, "Ignored", "index.html"+ query)
-    } 
+      }
+      history.replaceState({ foo: "bar" }, "Ignored", "index.html" + query)
+    }
     //updateWindowsLocation ()
 
     function createCanvasFor(data, tag, stacked) {
@@ -145,13 +142,89 @@
         type: 'bar',
         data: data,
         options: {
+          plugins: {
+            title: { 
+                display: true,
+                text: title
+            },
+            datalabels: { 
+              display: true,
+            //   formatter: (value, ctx) => { 
+            //     if (!stacked) return "" 
+            //     // Array of visible datasets :
+            //     let datasets = ctx.dataset   
+            //     if (ctx.dataIndex > 0) { 
+            //         var current= datasets.data[ctx.dataIndex]
+            //         var prev= datasets.data[ctx.dataIndex-1] 
+            //         var initial= datasets.data[0] 
+            //         var m2m = ((current/prev*100) - 100).toFixed(2);
+            //         var since0 = ((current/initial*100) - 100).toFixed(2);
+            //         if (m2m>0) m2m= "+"+m2m
+            //         if (since0>0) since0= "+"+since0
+            //         return "m2m:"+m2m+ "% s0"+since0+"%"
+            //     } else {
+            //       return "0%"
+            //     }  
+            //   },
+            //   anchor: 'end',
+              align: 'bottom'
+            }, 
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  var label = context.dataset.label || '';  
+                  var thisAction = 0;
+                  if (context.parsed.y !== null) {
+                    thisAction= context.parsed.y;
+                  } 
+                  if (!stacked) return label + " : " + thisAction; 
+                  var total = 0;
+                  for (var stack = 0; stack < context.parsed._stacks.y["_top"]; stack++) {
+                    total += context.parsed._stacks.y[stack]
+                  }  
+                  var pcent = ((thisAction/total*100)).toFixed(2);
+                  var labels = []
+                  labels.push(tag)
+                  labels.push("Total " + tag + " " + total.toFixed(0) + " across all actions") 
+                  labels.push(label + " is " + thisAction.toFixed(0) + " or " + pcent + "% of combined totals")
+                  return labels;
+                },
+                footer: function (ctx) {
+                  var context = ctx[0]
+                  var total = 0;
+                  if (stacked) {
+                    for (var stack = 0; stack < context.parsed._stacks.y["_top"]; stack++) {
+                      total += context.parsed._stacks.y[stack]
+                    }
+                  }
+                  var labels=[] 
+                  let datasets = context.dataset   
+                  if (context.dataIndex > 0) { 
+                    var current= datasets.data[context.dataIndex]
+                    var prev= datasets.data[context.dataIndex-1] 
+                    var initial= datasets.data[0] 
+                    var m2m = ((current/prev*100) - 100).toFixed(2);
+                    var since0 = ((current/initial*100) - 100).toFixed(2);
+                    if (m2m>0) m2m= "+"+m2m
+                    if (since0>0) since0= "+"+since0
+                    labels.push("Change:")
+                    labels.push("From Prev Month: "+ m2m + "%")
+                    labels.push("Over " + context.dataIndex + " months " + since0 + "%") 
+                  } else {  
+                    labels.push("baseline data point")
+                  }
+                  return labels
+                }
+              },
+            },
+          },
           scales: {
-            xAxes: [{
+            x: {
               stacked: stacked
-            }],
-            yAxes: [{
+            },
+            y: {
               stacked: stacked
-            }]
+            }
           },
           responsive: true,
           legend: {
@@ -169,11 +242,11 @@
     function update_graph(text) {
       var jsondata = parse_csv(text);
 
-      if (globalAppConfig.debug) { 
-        setInnerHtml("debug_raw_json",  '<h4>Raw Data</h4>' + '<pre>' + text + '</pre>');
+      if (globalAppConfig.debug) {
+        setInnerHtml("debug_raw_json", '<h4>Raw Data</h4>' + '<pre>' + text + '</pre>');
         setInnerHtml("debug_processed_text", '<h4>JSON Processed</h4>' + '<pre>' + JSON.stringify(jsondata, null, 4) + '</pre>');
       }
-      
+
       document.title = "Metrics "
         + (jsondata.data[0].Date) + " - " + (jsondata.data[jsondata.data.length - 1].Date)
 
@@ -183,80 +256,80 @@
         var isEnabled = globalAppConfig.actions_to_show == null || globalAppConfig.actions_to_show.includes(label)
         jsondata.selectedActions[label] = isEnabled
         selected +=
-          '<input type="checkbox" name="action" checked="' 
-          + isEnabled 
-          + '" id="select_label_' 
-          + label 
-          + '" value="' 
-          + label 
-          + '"/><label for="track">' 
+          '<input type="checkbox" name="action" checked="'
+          + isEnabled
+          + '" id="select_label_'
+          + label
+          + '" value="'
+          + label
+          + '"/><label for="track">'
           + label + '</label><br />'
       })
       selected += '<hr> <button id="select_all">Select All</button>'
       selected += '<button id="select_none">Select None</button>'
-      selected += '</fieldset>' 
+      selected += '</fieldset>'
 
       setInnerHtml("select_actions", selected);
       var trimmer = document.getElementById("show_top_n_trimmer");
       trimmer.max = jsondata.action_names.length
       jsondata.action_names.forEach(function (label) {
-        var input = document.getElementById('select_label_' + label); 
+        var input = document.getElementById('select_label_' + label);
         input.checked = jsondata.selectedActions[label]
-        input.oninput = function () { 
-          jsondata.selectedActions[label] = !jsondata.selectedActions[label] 
-          if (jsondata.selectedActions[label]) { 
+        input.oninput = function () {
+          jsondata.selectedActions[label] = !jsondata.selectedActions[label]
+          if (jsondata.selectedActions[label]) {
             trimmer.value++
-          } else { 
+          } else {
             trimmer.value--
-          } 
+          }
           var total = Object.keys(jsondata.selectedActions).length;
           var totalEnabled = (Object.values(jsondata.selectedActions).filter(function (enabled) { return enabled; })).length;
 
-          trimmer.value=totalEnabled;
-          trimmer.max=total; 
+          trimmer.value = totalEnabled;
+          trimmer.max = total;
           jsondata.labels.forEach(function (l) {
             show_graphs(jsondata, l);
           })
           // 
         }
-      })  
-      
-      
-     var delayed_refresh_location= function () {  
+      })
+
+
+      var delayed_refresh_location = function () {
         updateWindowsLocation()
-     }
+      }
       var select_all = document.getElementById("select_all");
-      select_all.onclick = function ()  {
+      select_all.onclick = function () {
         jsondata.action_names.forEach(function (label) {
-          var input = document.getElementById('select_label_' + label); 
+          var input = document.getElementById('select_label_' + label);
           if (!jsondata.selectedActions[label]) {
-            input.checked = true; 
-            input.oninput() 
+            input.checked = true;
+            input.oninput()
           }
         })
-         
-        setTimeout (delayed_refresh_location, 2000);
-     }
 
-     var select_none = document.getElementById("select_none");
-     select_none.onclick = function ()  {
+        setTimeout(delayed_refresh_location, 2000);
+      }
+
+      var select_none = document.getElementById("select_none");
+      select_none.onclick = function () {
         jsondata.action_names.forEach(function (label) {
-          var input = document.getElementById('select_label_' + label); 
+          var input = document.getElementById('select_label_' + label);
           if (jsondata.selectedActions[label]) {
             input.checked = false;
-            input.oninput() 
+            input.oninput()
           }
         })
-        
-        setTimeout (delayed_refresh_location, 2000);
-     }
+
+        setTimeout(delayed_refresh_location, 2000);
+      }
 
 
       var totalEnabled = (Object.values(jsondata.selectedActions).filter(function (enabled) { return enabled; })).length;
       var canvas_grid = ''
       jsondata.labels.forEach(function (label) {
         canvas_grid += '<div class="grid-item  wide"><canvas class="grid-item " id="canvas_' + label + '" ></canvas></div>';
-        if (totalEnabled > 1) { 
+        if (totalEnabled > 1 && jsondata.skipCombinedForLabel[label] != true ) { 
           canvas_grid += '<div class="grid-item  wide"><canvas class="grid-item " id="canvas_stack_' + label + '" ></canvas></div>';
         }
       })
@@ -265,7 +338,7 @@
       jsondata.labels.forEach(function (label) {
         globalAppConfig[label] = { labels: [label], datasets: [] };
         globalAppConfig.bars.push(createCanvasFor(globalAppConfig[label], label, false))
-        if (totalEnabled > 1) { 
+        if (totalEnabled > 1 && jsondata.skipCombinedForLabel[label] != true ) {
           globalAppConfig.bars.push(createCanvasFor(globalAppConfig[label], label, true))
         }
       })
@@ -279,7 +352,7 @@
           show_graphs(jsondata, l);
         })
       }
-      trimmer.onchange = trimmer.oninput; 
+      trimmer.onchange = trimmer.oninput;
       var choosemonths = document.getElementById("show_n_month_trimmer");
       choosemonths.oninput = function () {
         showMonthText(jsondata)
@@ -287,7 +360,7 @@
           show_graphs(jsondata, l);
         })
       }
-      choosemonths.onchange = choosemonths.oninput;  
+      choosemonths.onchange = choosemonths.oninput;
     }
     var trimmer = document.getElementById("show_top_n_trimmer");
 
@@ -295,10 +368,10 @@
       var total = Object.keys(json.selectedActions).length;
       var totalEnabled = (Object.values(json.selectedActions).filter(function (enabled) { return enabled; })).length;
 
-     if (trimmer.value > totalEnabled) {
-       trimmer.value = totalEnabled; 
-     }
-      
+      if (trimmer.value > totalEnabled) {
+        trimmer.value = totalEnabled;
+      }
+
 
       var selectedText;
       if (totalEnabled == total) {
@@ -308,22 +381,23 @@
       }
       setInnerHtml("show_top_n_text", "Showing top " + trimmer.value + ' of ' + selectedText);
       globalAppConfig.top_n_actions_to_show = trimmer.value
-      if (total == totalEnabled) { 
+      if (total == totalEnabled) {
         globalAppConfig.actions_to_show = null
-      } else { 
-        var enabled = Object.keys(json.selectedActions).filter(function (action) { 
-            return json.selectedActions[action]; })
-      
-        var prefix=""; 
-        var query=""
-        enabled.forEach(function (name) {
-            query += prefix+name
-            prefix=','
+      } else {
+        var enabled = Object.keys(json.selectedActions).filter(function (action) {
+          return json.selectedActions[action];
         })
-        if (enabled.length == 0) { 
-          globalAppConfig.actions_to_show = null 
-        } else  { 
-          globalAppConfig.actions_to_show = query 
+
+        var prefix = "";
+        var query = ""
+        enabled.forEach(function (name) {
+          query += prefix + name
+          prefix = ','
+        })
+        if (enabled.length == 0) {
+          globalAppConfig.actions_to_show = null
+        } else {
+          globalAppConfig.actions_to_show = query
         }
 
       }
@@ -367,7 +441,7 @@
       })
       dataToShow.forEach(function (element) {
         map[element.Name][element.Date] = element[columnToShow]
-      }) 
+      })
       var choosemonths = document.getElementById("show_n_month_trimmer");
       var monthstoshow = choosemonths.value;
       if (choosemonths.max > json.action_dates.length) {
@@ -394,7 +468,7 @@
       })
       globalAppConfig.bars.forEach(function (bar) {
         bar.update();
-      }) 
+      })
     }
 
     window.onload = function () {
