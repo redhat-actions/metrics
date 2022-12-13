@@ -313,3 +313,17 @@ Date,Name,Total,UniqueOwners,UniqueRepos,WorkflowRuns,UniqueJobs
 "2022-11-01T14:38:58+00:00","redhat-actions/push-to-registry",68235,425,925,37660,51885
 "2022-11-01T14:38:58+00:00","redhat-actions/s2i-build",615,30,65,505,615
 "2022-11-01T14:38:58+00:00","redhat-actions/try-in-web-ide",585,15,25,570,570
+"2022-12-01T14:51:23+00:00","redhat-actions/buildah-build",58100,425,760,46645,55420
+"2022-12-01T14:51:23+00:00","redhat-actions/common/action-io-generator",235,5,15,235,235
+"2022-12-01T14:51:23+00:00","redhat-actions/common/bundle-verifier",235,5,15,235,235
+"2022-12-01T14:51:23+00:00","redhat-actions/common/commit-data",280,5,15,215,280
+"2022-12-01T14:51:23+00:00","redhat-actions/crda",665,20,30,650,665
+"2022-12-01T14:51:23+00:00","redhat-actions/oc-installer",4995,40,110,3115,5030
+"2022-12-01T14:51:23+00:00","redhat-actions/oc-login",25660,130,525,17240,24540
+"2022-12-01T14:51:23+00:00","redhat-actions/oc-new-app",760,25,40,625,760
+"2022-12-01T14:51:23+00:00","redhat-actions/openshift-actions-runner-installer",145,5,10,95,145
+"2022-12-01T14:51:23+00:00","redhat-actions/openshift-tools-installer",22180,220,480,14780,17815
+"2022-12-01T14:51:23+00:00","redhat-actions/podman-login",46730,175,355,40105,45875
+"2022-12-01T14:51:23+00:00","redhat-actions/push-to-registry",79540,475,875,49660,63475
+"2022-12-01T14:51:23+00:00","redhat-actions/s2i-build",1700,35,90,1120,1665
+"2022-12-01T14:51:23+00:00","redhat-actions/try-in-web-ide",550,15,30,520,520
