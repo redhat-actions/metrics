@@ -327,6 +327,8 @@ Date,Name,Total,UniqueOwners,UniqueRepos,WorkflowRuns,UniqueJobs
 "2022-12-01T14:51:23+00:00","redhat-actions/push-to-registry",79540,475,875,49660,63475
 "2022-12-01T14:51:23+00:00","redhat-actions/s2i-build",1700,35,90,1120,1665
 "2022-12-01T14:51:23+00:00","redhat-actions/try-in-web-ide",550,15,30,520,520
+<<<<<<< HEAD
+=======
 "2023-01-01T12:01:26+00:00","redhat-actions/buildah-build",63340,440,890,53490,61010
 "2023-01-01T12:01:26+00:00","redhat-actions/common/action-io-generator",280,5,15,280,280
 "2023-01-01T12:01:26+00:00","redhat-actions/common/bundle-verifier",290,5,20,290,290
@@ -340,3 +342,4 @@ Date,Name,Total,UniqueOwners,UniqueRepos,WorkflowRuns,UniqueJobs
 "2023-01-01T12:01:26+00:00","redhat-actions/push-to-registry",86375,490,975,56475,69960
 "2023-01-01T12:01:26+00:00","redhat-actions/s2i-build",1775,25,65,1130,1775
 "2023-01-01T12:01:26+00:00","redhat-actions/try-in-web-ide",480,15,25,460,460
+>>>>>>> 7834b9996a1abfedcdceb8ff4be8b3fa7a8a65ec
