@@ -207,8 +207,8 @@
                     console.log ("prev", prev)
                     console.log ("initial", initial)
                     
-                    if (prev == null) prev=current 
-                    if (initial == null) initial=current 
+                    if (prev == 0) prev=current 
+                    if (initial == 0) initial=current 
 
                     var m2m = ((current/prev*100) - 100).toFixed(2);
                     var since0 = ((current/initial*100) - 100).toFixed(2);
