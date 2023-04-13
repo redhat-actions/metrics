@@ -369,8 +369,6 @@ Date,Name,Total,UniqueOwners,UniqueRepos,WorkflowRuns,UniqueJobs
 "2023-03-01T12:01:33+00:00","redhat-actions/push-to-registry",99630,615,1290,61800,82170
 "2023-03-01T12:01:33+00:00","redhat-actions/s2i-build",1520,30,70,1000,1530
 "2023-03-01T12:01:33+00:00","redhat-actions/try-in-web-ide",615,15,25,580,580
-<<<<<<< HEAD
-=======
 "2023-04-01T12:01:27+00:00","redhat-actions/buildah-build",88230,700,1370,60165,84755
 "2023-04-01T12:01:27+00:00","redhat-actions/common/commit-data",230,5,10,195,230
 "2023-04-01T12:01:27+00:00","redhat-actions/crda",850,20,55,845,845
@@ -383,4 +381,3 @@ Date,Name,Total,UniqueOwners,UniqueRepos,WorkflowRuns,UniqueJobs
 "2023-04-01T12:01:27+00:00","redhat-actions/push-to-registry",110955,760,1540,64395,92785
 "2023-04-01T12:01:27+00:00","redhat-actions/s2i-build",1440,30,135,1150,1435
 "2023-04-01T12:01:27+00:00","redhat-actions/try-in-web-ide",530,15,25,500,500
->>>>>>> 5b31d970bc4bdb751a4e1412b778ef57c1518229
