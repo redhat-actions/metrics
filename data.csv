@@ -391,3 +391,14 @@ Date,Name,Total,UniqueOwners,UniqueRepos,WorkflowRuns,UniqueJobs
 "2023-05-01T12:01:32+00:00","redhat-actions/push-to-registry",20220,420,745,11910,15970
 "2023-05-01T12:01:32+00:00","redhat-actions/s2i-build",460,15,45,335,385
 "2023-05-01T12:01:32+00:00","redhat-actions/try-in-web-ide",900,5,15,890,890
+"2023-06-09T16:37:55-05:00","redhat-actions/buildah-build",73640,910,1655,44360,69465
+"2023-06-09T16:37:55-05:00","redhat-actions/crda",895,25,45,895,895
+"2023-06-09T16:37:55-05:00","redhat-actions/oc-installer",5065,45,120,4170,5070
+"2023-06-09T16:37:55-05:00","redhat-actions/oc-login",34625,135,640,18905,34125
+"2023-06-09T16:37:55-05:00","redhat-actions/oc-new-app",850,20,40,520,710
+"2023-06-09T16:37:55-05:00","redhat-actions/openshift-actions-runner-installer",375,5,15,345,375
+"2023-06-09T16:37:55-05:00","redhat-actions/openshift-tools-installer",19745,190,560,13675,18710
+"2023-06-09T16:37:55-05:00","redhat-actions/podman-login",34145,280,550,26750,32590
+"2023-06-09T16:37:55-05:00","redhat-actions/push-to-registry",96250,945,1815,49310,77920
+"2023-06-09T16:37:55-05:00","redhat-actions/s2i-build",1705,30,125,1480,1715
+"2023-06-09T16:37:55-05:00","redhat-actions/try-in-web-ide",435,10,20,405,405
