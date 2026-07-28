@@ -76,7 +76,7 @@
 
   <script type="module">
     import {
-      getTextAndUpdate, setInnerHtml,
+      getTextAndUpdate, setInnerHtml, escapeHtml,
       parse_csv
     } from './modules/common.js';
 
@@ -250,8 +250,8 @@
       var jsondata = parse_csv(text);
 
       if (globalAppConfig.debug) {
-        setInnerHtml("debug_raw_json", '<h4>Raw Data</h4>' + '<pre>' + text + '</pre>');
-        setInnerHtml("debug_processed_text", '<h4>JSON Processed</h4>' + '<pre>' + JSON.stringify(jsondata, null, 4) + '</pre>');
+        setInnerHtml("debug_raw_json", '<h4>Raw Data</h4>' + '<pre>' + escapeHtml(text) + '</pre>');
+        setInnerHtml("debug_processed_text", '<h4>JSON Processed</h4>' + '<pre>' + escapeHtml(JSON.stringify(jsondata, null, 4)) + '</pre>');
       }
 
       document.title = "Metrics "
@@ -266,11 +266,11 @@
           '<input type="checkbox" name="action" checked="'
           + isEnabled
           + '" id="select_label_'
-          + label
+          + escapeHtml(label)
           + '" value="'
-          + label
+          + escapeHtml(label)
           + '"/><label for="track">'
-          + label + '</label><br />'
+          + escapeHtml(label) + '</label><br />'
       })
       selected += '<hr> <button id="select_all">Select All</button>'
       selected += '<button id="select_none">Select None</button>'
@@ -335,9 +335,9 @@
       var totalEnabled = (Object.values(jsondata.selectedActions).filter(function (enabled) { return enabled; })).length;
       var canvas_grid = ''
       jsondata.labels.forEach(function (label) {
-        canvas_grid += '<div class="grid-item  wide"><canvas class="grid-item " id="canvas_' + label + '" ></canvas></div>';
-        if (totalEnabled > 1 && jsondata.skipCombinedForLabel[label] != true ) { 
-          canvas_grid += '<div class="grid-item  wide"><canvas class="grid-item " id="canvas_stack_' + label + '" ></canvas></div>';
+        canvas_grid += '<div class="grid-item  wide"><canvas class="grid-item " id="canvas_' + escapeHtml(label) + '" ></canvas></div>';
+        if (totalEnabled > 1 && jsondata.skipCombinedForLabel[label] != true ) {
+          canvas_grid += '<div class="grid-item  wide"><canvas class="grid-item " id="canvas_stack_' + escapeHtml(label) + '" ></canvas></div>';
         }
       })
       setInnerHtml("outer_grid_holder", canvas_grid);
