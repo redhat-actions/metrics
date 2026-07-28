@@ -1,1 +1,4 @@
-docker stop nginx  
+#!/usr/bin/env bash
+set -euo pipefail
+
+docker stop nginx

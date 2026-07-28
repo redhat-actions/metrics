@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "modules/**"
+      - "hack/**"
+      - "data.csv"
+      - ".github/workflows/ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "modules/**"
+      - "hack/**"
+      - "data.csv"
+      - ".github/workflows/ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate HTML syntax
+        run: |
+          # Check that index.html is well-formed enough to open without errors
+          if ! grep -q '<!DOCTYPE html>' index.html; then
+            echo "::error::Missing DOCTYPE declaration"
+            exit 1
+          fi
+          if ! grep -q '</html>' index.html; then
+            echo "::error::Missing closing </html> tag"
+            exit 1
+          fi
+
+      - name: Validate JavaScript syntax
+        run: |
+          # Use Node.js built-in parser to check for syntax errors
+          node --check modules/common.js
+
+      - name: Lint shell scripts
+        run: |
+          shellcheck hack/run.sh hack/stop.sh
