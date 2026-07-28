@@ -386,7 +386,7 @@
       } else {
         selectedText = totalEnabled + ' (<a href="#legend">subset selected from ' + total + ' actions </a>)';
       }
-      setInnerHtml("show_top_n_text", "Showing top " + trimmer.value + ' of ' + selectedText);
+      setInnerHtml("show_top_n_text", "Showing top " + escapeHtml(trimmer.value) + ' of ' + selectedText);
       globalAppConfig.top_n_actions_to_show = trimmer.value
       if (total == totalEnabled) {
         globalAppConfig.actions_to_show = null
@@ -413,8 +413,8 @@
 
     var choosemonths = document.getElementById("show_n_month_trimmer");
     function showMonthText(json) {
-      setInnerHtml("show_n_months_text", "Showing last " + choosemonths.value + ' of '
-        + choosemonths.max + ' months of data');
+      setInnerHtml("show_n_months_text", "Showing last " + escapeHtml(choosemonths.value) + ' of '
+        + escapeHtml(choosemonths.max) + ' months of data');
       globalAppConfig.months_to_show = choosemonths.value
       updateWindowsLocation();
     }
