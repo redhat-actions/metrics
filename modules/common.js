@@ -14,6 +14,11 @@ function getTextAndUpdate(url, success, error) {
   xhttp.setRequestHeader('Accept', 'text/plain');
   xhttp.send();
 }
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
 function setInnerHtml(id, html) {
   document.getElementById(id).innerHTML = html;
 }
@@ -209,5 +214,5 @@ function compute_derived_stats(actionData) {
 }
 
 export {
-  getTextAndUpdate, setInnerHtml, parse_csv
+  getTextAndUpdate, setInnerHtml, escapeHtml, parse_csv
 }
