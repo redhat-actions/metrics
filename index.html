@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Github Actions Data</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> -->
 
   <style>
@@ -467,7 +467,7 @@
         var colour = colours[name]
         barChartData.datasets.push({
           label: name,
-          backgroundColor: Chart.helpers.color(colour).alpha(0.7).rgbString(),
+          backgroundColor: colour.replace('rgb(', 'rgba(').replace(')', ', 0.7)'),
           borderColor: colour,
           borderWidth: 1,
           data: trimmed_data
